@@ -34,12 +34,18 @@ export default function SignInForm() {
 
   const onSubmit = (data: SignInSchemaType) => {
     console.log("FORM DATA:", data);
+    console.log(data);
 
     signIn(data, {
-      onSuccess: () => {
-        toast.success("Login successful 🎉");
-
-        setTimeout(() => navigate("/dashboard"), 800);
+      onSuccess: (response) => {
+        console.log(response);
+        if (response?.access_token && response?.refresh_token) {
+          console.log(response.access_token, response.refresh_token);
+          localStorage.setItem("access", response.access_token);
+          localStorage.setItem("refresh", response.refresh_token);
+          toast.success("Login Successful");
+          setTimeout(() => navigate("/dashboard"), 800);
+        }
       },
       onError: (err: any) => {
         const message =

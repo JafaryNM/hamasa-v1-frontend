@@ -68,10 +68,7 @@ const othersItems: NavItem[] = [
   {
     icon: <CopyIcon />,
     name: "System Settings",
-    subItems: [
-      { name: "Clients", path: "/clients", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
+    subItems: [{ name: "Clients", path: "/system-clients", pro: false }],
   },
   {
     icon: <UserIcon />,
