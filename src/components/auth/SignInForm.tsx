@@ -1,5 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Input, Typography } from "antd";
+
+import { Button } from "@/components/ui/button";
+
 import {
   ArrowLeftOutlined,
   EyeInvisibleOutlined,
@@ -8,12 +10,11 @@ import {
 
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { useSign } from "@/hooks/useSign";
 import toast from "react-hot-toast";
 import { SignInSchema, SignInSchemaType } from "@/Schema/SignSchema";
-
-const { Title, Text } = Typography;
+import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
 
 export default function SignInForm() {
   const navigate = useNavigate();
@@ -33,9 +34,6 @@ export default function SignInForm() {
   const { mutate: signIn, isPending } = useSign();
 
   const onSubmit = (data: SignInSchemaType) => {
-    console.log("FORM DATA:", data);
-    console.log(data);
-
     signIn(data, {
       onSuccess: (response) => {
         console.log(response);
@@ -62,15 +60,13 @@ export default function SignInForm() {
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-6 text-center">
-            <Title level={3} className="!mb-1">
-              Sign In
-            </Title>
-            <Text className="text-gray-500">Enter your credentials</Text>
+            <h1 className="!mb-1 text-3xl font-bold p-4">Sign In</h1>
+            <p className="text-gray-500">Enter your credentials</p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {/* Identifier */}
-            <div className="mb-4">
+            <div>
               <label className="block mb-1 font-medium">Email / Username</label>
 
               <Controller
@@ -80,7 +76,7 @@ export default function SignInForm() {
                   <Input
                     {...field}
                     placeholder="Enter email or username"
-                    size="large"
+                    className={errors.identifier ? "border-red-500" : ""}
                   />
                 )}
               />
@@ -93,20 +89,18 @@ export default function SignInForm() {
             </div>
 
             {/* Password */}
-            <div className="mb-4">
+            <div>
               <label className="block mb-1 font-medium">Password</label>
 
               <Controller
                 name="password"
                 control={control}
                 render={({ field }) => (
-                  <Input.Password
+                  <Input
                     {...field}
+                    type="password"
                     placeholder="Enter your password"
-                    size="large"
-                    iconRender={(visible) =>
-                      visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                    }
+                    className={errors.password ? "border-red-500" : ""}
                   />
                 )}
               />
@@ -118,14 +112,16 @@ export default function SignInForm() {
               )}
             </div>
 
-            <Button
-              type="primary"
-              htmlType="submit"
-              block
-              size="large"
-              loading={isPending}
-            >
-              {isPending ? "Signing In..." : "Sign In"}
+            {/* Submit */}
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing In...
+                </>
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </form>
         </div>
