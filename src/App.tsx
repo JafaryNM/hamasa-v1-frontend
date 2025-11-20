@@ -20,6 +20,9 @@ import Home from "./pages/Dashboard/Home";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "@/components/common/ProtectedRoute";
 import Client from "@/pages/Client/Clients";
+import ProjectCategories from "@/pages/ProjectCategories/ProjectCategories";
+import MediaCategories from "@/pages/MediaCategories/MediaCategories";
+import Media from "@/pages/Media/Media";
 
 export default function App() {
   return (
@@ -30,7 +33,28 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route index path="/dashboard" element={<Home />} />
-            <Route index path="/system-clients" element={<Client />} />
+            <Route index path="/system/system-clients" element={<Client />} />
+            <Route
+              index
+              path="/system/system-project-categories"
+              element={<ProjectCategories />}
+            />
+            <Route
+              index
+              path="/system/system-project-categories"
+              element={<ProjectCategories />}
+            />
+            <Route
+              index
+              path="/system/system-media-categories"
+              element={<MediaCategories />}
+            />
+            <Route
+              index
+              path="/system/system-media-categories"
+              element={<MediaCategories />}
+            />
+            <Route index path="/system/system-medias" element={<Media />} />
           </Route>
         </Route>
 

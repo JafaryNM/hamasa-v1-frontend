@@ -15,8 +15,6 @@ export const ClientSchema = z.object({
   email: z.string().email("Invalid email address"),
   name_of_organisation: z.string().min(1, "Organisation is required"),
   country: z.string().min(1, "Country is required"),
-  sector: z.string().min(1, "Sector is required"),
-  plain_password: z.string().min(6, "Password must be at least 6 characters"),
   role: UserRoleEnum,
 });
 

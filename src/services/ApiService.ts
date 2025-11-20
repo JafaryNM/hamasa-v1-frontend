@@ -1,112 +1,45 @@
 import apiClient from "@/services/apiClient";
 
-interface Entity {
-  uuid: string;
-}
+export const createService = (endpoint: string) => {
+  const buildUrl = (extendedUrl = "", id?: string | number) =>
+    id ? `${endpoint}${extendedUrl}/${id}/` : `${endpoint}${extendedUrl}/`;
 
-export function createService(endpoint: string) {
-  // -----------------------
   // LIST
-  // -----------------------
-  function list<T>(params?: unknown, extendedUrl: string = "") {
+  const list = <T>(params?: unknown, extendedUrl = "") => {
     const controller = new AbortController();
-    const request = apiClient.get(`${endpoint}${extendedUrl}`, {
+    const request = apiClient.get<T>(buildUrl(extendedUrl), {
       signal: controller.signal,
       params,
     });
-
     return { request, cancel: () => controller.abort() };
-  }
+  };
 
-  // -----------------------
-  // LIST BY ITEM
-  // -----------------------
-  function listByItem<T>(
-    uuid: string,
-    params?: unknown,
-    extendedUrl: string = ""
-  ) {
+  // SHOW SINGLE
+  const show = (id: string | number, extendedUrl = "") => {
     const controller = new AbortController();
-    const request = apiClient.get(`${endpoint}${extendedUrl}/${uuid}`, {
-      signal: controller.signal,
-      params,
-    });
-
-    return { request, cancel: () => controller.abort() };
-  }
-
-  // -----------------------
-  // SHOW
-  // -----------------------
-  function show(uuid: string, extendedUrl: string = "") {
-    const controller = new AbortController();
-    const request = apiClient.get(`${endpoint}${extendedUrl}/${uuid}`, {
+    const request = apiClient.get(buildUrl(extendedUrl, id), {
       signal: controller.signal,
     });
-
     return { request, cancel: () => controller.abort() };
-  }
+  };
 
-  // -----------------------
-  // SHOW WITH PARAMS
-  // -----------------------
-  function showWithParams(uuid: string, extendedUrl = "", params?: unknown) {
-    const controller = new AbortController();
-    const request = apiClient.get(`${endpoint}${extendedUrl}/${uuid}`, {
-      signal: controller.signal,
-      params,
-    });
+  // CREATE (POST)
+  const create = <T>(payload: T, extendedUrl = "") =>
+    apiClient.post(buildUrl(extendedUrl), payload);
 
-    return { request, cancel: () => controller.abort() };
-  }
+  // UPDATE (PATCH)
+  const update = <T>(id: string | number, payload: T, extendedUrl = "") =>
+    apiClient.patch(buildUrl(extendedUrl, id), payload);
 
-  // -----------------------
-  // POST (CREATE)
-  // -----------------------
-  function post<T>(extendedUrl = "", body?: unknown) {
-    return apiClient.post(`${endpoint}${extendedUrl}`, body);
-  }
-
-  // alias create
-  function create<T>(body?: unknown, extendedUrl = "") {
-    return apiClient.post(`${endpoint}${extendedUrl}`, body);
-  }
-
-  // -----------------------
-  // PUT (UPDATE ENTIRE)
-  // -----------------------
-  function put(uuid: string, body?: unknown, extendedUrl = "") {
-    return apiClient.put(`${endpoint}${extendedUrl}/${uuid}`, body);
-  }
-
-  // -----------------------
-  // PATCH (UPDATE PARTIAL)
-  // -----------------------
-  function patch(uuid: string, body?: unknown, extendedUrl = "") {
-    return apiClient.patch(`${endpoint}${extendedUrl}/${uuid}`, body);
-  }
-
-  // -----------------------
   // DELETE
-  // -----------------------
-  function remove(uuid: string, extendedUrl: string = "") {
-    return apiClient.delete(`${endpoint}${extendedUrl}/${uuid}`);
-  }
+  const remove = (id: string | number, extendedUrl = "") =>
+    apiClient.delete(buildUrl(extendedUrl, id));
 
   return {
     list,
-    listByItem,
     show,
-    showWithParams,
-
-    post,
     create,
-
-    put,
-    patch,
-
+    update,
     delete: remove,
   };
-}
-
-export default createService;
+};

@@ -1,20 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
-
-import { Button } from "@/components/ui/button";
-
-import {
-  ArrowLeftOutlined,
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-} from "@ant-design/icons";
-
+import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useSign } from "@/hooks/useSign";
 import toast from "react-hot-toast";
-import { SignInSchema, SignInSchemaType } from "@/Schema/SignSchema";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { SignInSchemaType } from "@/Schema/SignSchema";
 
 export default function SignInForm() {
   const navigate = useNavigate();
@@ -24,7 +15,6 @@ export default function SignInForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<SignInSchemaType>({
-    resolver: zodResolver(SignInSchema),
     defaultValues: {
       identifier: "",
       password: "",
@@ -34,21 +24,32 @@ export default function SignInForm() {
   const { mutate: signIn, isPending } = useSign();
 
   const onSubmit = (data: SignInSchemaType) => {
+    console.log("Submitted Data:", data);
+
     signIn(data, {
       onSuccess: (response) => {
-        console.log(response);
-        if (response?.access_token && response?.refresh_token) {
-          console.log(response.access_token, response.refresh_token);
+        console.log("Response received:", response);
+
+        if (response?.access_token) {
           localStorage.setItem("access", response.access_token);
-          localStorage.setItem("refresh", response.refresh_token);
-          toast.success("Login Successful");
-          setTimeout(() => navigate("/dashboard"), 800);
         }
+
+        if (response?.refresh_token) {
+          localStorage.setItem("refresh", response.refresh_token);
+        }
+
+        toast.success("Login Successful");
+
+        setTimeout(() => navigate("/dashboard"), 700);
       },
+
       onError: (err: any) => {
+        console.log("LOGIN ERROR:", err?.response);
+
         const message =
+          err?.response?.data?.detail ||
           err?.response?.data?.message ||
-          "Login failed, please check your credentials";
+          "Invalid credentials";
 
         toast.error(message);
       },
@@ -60,7 +61,7 @@ export default function SignInForm() {
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-6 text-center">
-            <h1 className="!mb-1 text-3xl font-bold p-4">Sign In</h1>
+            <h1 className="text-3xl font-bold p-4">Sign In</h1>
             <p className="text-gray-500">Enter your credentials</p>
           </div>
 
@@ -72,6 +73,7 @@ export default function SignInForm() {
               <Controller
                 name="identifier"
                 control={control}
+                rules={{ required: "Identifier is required" }}
                 render={({ field }) => (
                   <Input
                     {...field}
@@ -95,6 +97,7 @@ export default function SignInForm() {
               <Controller
                 name="password"
                 control={control}
+                rules={{ required: "Password is required" }}
                 render={({ field }) => (
                   <Input
                     {...field}

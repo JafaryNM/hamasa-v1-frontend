@@ -4,12 +4,23 @@ import { SignIn } from "@/@type/SignIn";
 
 export const useSign = () => {
   return useMutation({
-    mutationFn: (payload: SignIn) =>
-      authService.post("/login", payload).then((res) => res.data),
+    mutationFn: async (payload: SignIn) => {
+      console.log("payload sent to API:", payload);
+
+      // 👈 Correct POST endpoint → /auth/login/
+      const res = await authService.create(payload, "/login");
+
+      console.log("API response:", res.data);
+      return res.data;
+    },
 
     onSuccess: (data) => {
-      if (data?.token) {
-        localStorage.setItem("token", data.token);
+      if (data?.access_token) {
+        localStorage.setItem("access", data.access_token);
+      }
+
+      if (data?.refresh_token) {
+        localStorage.setItem("refresh", data.refresh_token);
       }
     },
 

@@ -6,7 +6,7 @@ export type UserRole =
   | "org_user";
 
 export interface Client {
-  uid?: string;
+  id?: string;
   first_name: string;
   last_name: string;
   phone_number: string;

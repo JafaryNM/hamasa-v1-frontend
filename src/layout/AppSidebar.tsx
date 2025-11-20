@@ -64,12 +64,32 @@ const navItems: NavItem[] = [
   },
 ];
 
+// /system-project-categories
+
 const othersItems: NavItem[] = [
   {
     icon: <CopyIcon />,
     name: "System Settings",
-    subItems: [{ name: "Clients", path: "/system-clients", pro: false }],
+    subItems: [
+      { name: "Clients", path: "/system/system-clients", pro: false },
+      {
+        name: "Project Categories",
+        path: "/system/system-project-categories",
+        pro: false,
+      },
+      {
+        name: "Media Categories",
+        path: "/system/system-media-categories",
+        pro: false,
+      },
+      {
+        name: "Media Sources",
+        path: "/system/system-medias",
+        pro: false,
+      },
+    ],
   },
+
   {
     icon: <UserIcon />,
     name: "User managements",
