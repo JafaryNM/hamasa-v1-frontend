@@ -23,6 +23,8 @@ import Client from "@/pages/Client/Clients";
 import ProjectCategories from "@/pages/ProjectCategories/ProjectCategories";
 import MediaCategories from "@/pages/MediaCategories/MediaCategories";
 import Media from "@/pages/Media/Media";
+import Projects from "@/pages/Project/Projects";
+import AddProject from "@/pages/Project/AddProject";
 
 export default function App() {
   return (
@@ -55,6 +57,8 @@ export default function App() {
               element={<MediaCategories />}
             />
             <Route index path="/system/system-medias" element={<Media />} />
+            <Route index path="/projects" element={<Projects />} />
+            <Route path="/addproject" element={<AddProject />} />
           </Route>
         </Route>
 

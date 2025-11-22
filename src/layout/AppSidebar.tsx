@@ -49,8 +49,8 @@ const navItems: NavItem[] = [
   // },
   {
     icon: <ListIcon />,
-    name: "Application",
-    path: "/applications",
+    name: "Project",
+    path: "/projects",
   },
   {
     icon: <FolderIcon />,
@@ -77,11 +77,11 @@ const othersItems: NavItem[] = [
         path: "/system/system-project-categories",
         pro: false,
       },
-      {
-        name: "Media Categories",
-        path: "/system/system-media-categories",
-        pro: false,
-      },
+      // {
+      //   name: "Media Categories",
+      //   path: "/system/system-media-categories",
+      //   pro: false,
+      // },
       {
         name: "Media Sources",
         path: "/system/system-medias",

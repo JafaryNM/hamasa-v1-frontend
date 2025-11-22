@@ -31,7 +31,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast, Toaster } from "react-hot-toast";
 
-import { DataTable } from "@/components/ui/datatable";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
@@ -44,8 +43,8 @@ import {
 
 import { Media } from "@/@type/Media";
 import { MediaSchema, MediaType } from "@/Schema/MediaSchema";
-import { useMediaCategories } from "@/hooks/useMediaCategories";
 import { useMedia } from "@/hooks/useMedia"; // Single record fetch
+import { DataTable } from "@/components/ui/datatable";
 
 export default function MediaPage() {
   const [page, setPage] = useState(1);
@@ -58,12 +57,6 @@ export default function MediaPage() {
     page_size: 10,
     name: nameFilter || null,
     sort: "desc",
-  });
-
-  const { data: mediaCategories } = useMediaCategories({
-    page: 1,
-    page_size: 200,
-    sort: "asc",
   });
 
   const mediaDetails = useMedia(selectedId);
@@ -80,17 +73,23 @@ export default function MediaPage() {
     resolver: zodResolver(MediaSchema),
     defaultValues: {
       name: "",
-      category_id: "",
+      category_name: "",
     },
   });
 
   const { handleSubmit, control, reset } = form;
+  const MEDIA_CATEGORY_OPTIONS = [
+    { category_name: "Social Media" },
+    { category_name: "Print Media" },
+    { category_name: "TV" },
+    { category_name: "Radio" },
+  ];
 
   useEffect(() => {
     if (mediaDetails.data && isModalOpen) {
       reset({
         name: mediaDetails.data.name,
-        category_id: mediaDetails.data.category_id,
+        category_name: mediaDetails.data.category_name,
       });
     }
   }, [mediaDetails.data, isModalOpen]);
@@ -108,7 +107,7 @@ export default function MediaPage() {
 
   const openCreateModal = () => {
     setSelectedId(null);
-    reset({ name: "", category_id: "" });
+    reset({ name: "", category_name: "" });
     setIsModalOpen(true);
   };
 
@@ -249,7 +248,7 @@ export default function MediaPage() {
 
                 <FormField
                   control={control}
-                  name="category_id"
+                  name="category_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Media Category</FormLabel>
@@ -263,9 +262,12 @@ export default function MediaPage() {
                           </SelectTrigger>
 
                           <SelectContent>
-                            {mediaCategories?.results?.map((cat: any) => (
-                              <SelectItem key={cat.id} value={cat.id}>
-                                {cat.name}
+                            {MEDIA_CATEGORY_OPTIONS.map((cat) => (
+                              <SelectItem
+                                key={cat.category_name}
+                                value={cat.category_name}
+                              >
+                                {cat.category_name}
                               </SelectItem>
                             ))}
                           </SelectContent>
